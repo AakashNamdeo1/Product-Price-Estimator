@@ -3,7 +3,7 @@ import numpy as np
 import joblib
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestRegressor  # Changed here
+from sklearn.linear_model import LinearRegression
 
 def train_model():
     df = pd.read_csv('products_200k.csv')
@@ -20,9 +20,9 @@ def train_model():
     y = df[target].values
 
     X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.10, random_state=1)
+    X, y, test_size=0.10, random_state=1)
 
-    model = RandomForestRegressor(n_estimators=100, random_state=1)  # Changed here
+    model = LinearRegression()
     model.fit(X_train, y_train)
     score = model.score(X_test, y_test)
     joblib.dump((model, encoder, scaler), 'sklearn_price_model.pkl')
