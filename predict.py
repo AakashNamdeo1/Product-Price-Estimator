@@ -3,7 +3,7 @@ import numpy as np
 import joblib
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LinearRegression
+from sklearn.ensemble import RandomForestRegressor  # Updated import
 
 def train_model():
     df = pd.read_csv('products_200k.csv')
@@ -11,7 +11,7 @@ def train_model():
     numerical = ['weight_kg', 'rating', 'warranty_years', 'power_usage_watts', 'feature_score']
     target = 'price'
 
-    encoder = OneHotEncoder(sparse_output=False)
+    encoder = OneHotEncoder(sparse_output=False, handle_unknown='ignore')  # Added handle_unknown
     encoded_cat = encoder.fit_transform(df[categorical])
     scaler = StandardScaler()
     scaled_num = scaler.fit_transform(df[numerical])
@@ -20,9 +20,9 @@ def train_model():
     y = df[target].values
 
     X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.10, random_state=1)
+        X, y, test_size=0.10, random_state=1)
 
-    model = LinearRegression()
+    model = RandomForestRegressor(n_estimators=100, random_state=1)  # Updated model
     model.fit(X_train, y_train)
     score = model.score(X_test, y_test)
     joblib.dump((model, encoder, scaler), 'sklearn_price_model.pkl')
